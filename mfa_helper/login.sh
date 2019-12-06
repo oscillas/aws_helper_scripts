@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+# /usr/bin/env bash
 #
 # Person to blame when this doesn't work giovanni@oscillas.com
 #
@@ -7,6 +7,24 @@
 # Dependencies: ./jq
 # https://stedolan.github.io/jq/
 #
+print_usage() {
+    echo "don't ever speak to me or my son again"
+}
+
+while getopts 'DP:' flag; do
+    case "${flag}" in
+        D) DOCKER_FLAG='true' ;;
+        P) AWS_PROFILE="${OPTARG}" ;;
+        *) print_usage
+           exit 1 ;;
+    esac
+done
+
+if [[ "$DOCKER_FLAG" == "true" ]] && [[ -z $AWS_PROFILE ]]; then
+    print_usage
+    exit 1
+fi
+
 SEDCMD=''
 GREPCMD=''
 unameOut="$(uname -s)"
@@ -49,3 +67,8 @@ $SEDCMD -i -r "/\[mfa\]/,/\[/ s|(.*aws_access_key_id.*)=.*$|\1= $aws_access_key_
 $SEDCMD -i 's/\"//g' ~/.aws/credentials
 
 echo Credentials successfully updated.
+
+if [[ "$DOCKER_FLAG" == "true" ]]; then
+    dockerLogin=$(aws ecr get-login --no-include-email --profile $AWS_PROFILE)
+    eval $dockerLogin
+fi
