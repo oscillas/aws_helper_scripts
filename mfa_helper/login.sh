@@ -1,4 +1,4 @@
-# /usr/bin/env bash
+#!/usr/bin/env bash
 #
 # Person to blame when this doesn't work giovanni@oscillas.com
 #
