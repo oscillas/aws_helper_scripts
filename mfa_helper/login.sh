@@ -40,7 +40,7 @@ parse_opts() {
         esac
     done
 
-    if [ $DOCKER_FLAG = true ] && [[ -z $AWS_PROFILE ]]; then
+    if [ "$DOCKER_FLAG" = true ] && [[ -z $AWS_PROFILE ]]; then
         print_usage
         exit 1
     fi
